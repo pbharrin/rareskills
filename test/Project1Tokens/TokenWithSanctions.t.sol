@@ -11,7 +11,7 @@ contract TokenWithSanctionsTest is Test {
     address add2 = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     function setUp() public {
-        token = new TokenWithSanctions("Witch", "WTCH");
+        token = new TokenWithSanctions("Witch", "WTCH", 1000);
     }
 
     // check to see if the ban function works

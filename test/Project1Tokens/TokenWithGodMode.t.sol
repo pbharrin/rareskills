@@ -12,7 +12,7 @@ contract TokenWithGodModeTest is Test {
     address add2 = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     function setUp() public {
-        token = new TokenWithGodMode("Witch", "WTCH");
+        token = new TokenWithGodMode("Witch", "WTCH", 1000);
     }
 
 

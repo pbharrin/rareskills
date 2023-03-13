@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "erc1363-payable-token/contracts/token/ERC1363/ERC1363.sol";
-
-uint constant INITIAL_SUPPLY = 1000;
+import {ERC1363, ERC20, IERC20} from "erc1363-payable-token/contracts/token/ERC1363/ERC1363.sol";
 
 contract TokenWithSanctions is ERC1363 {
 
@@ -12,10 +10,11 @@ contract TokenWithSanctions is ERC1363 {
     
     constructor(
         string memory _name,
-        string memory _symbol
+        string memory _symbol,
+        uint _initialSupply
     ) ERC20(_name, _symbol) {
-        // set initial supply
-        _mint(msg.sender, INITIAL_SUPPLY);
+        // set initial supply, and admin
+        _mint(msg.sender, _initialSupply);
         _admin = msg.sender;
     }
 

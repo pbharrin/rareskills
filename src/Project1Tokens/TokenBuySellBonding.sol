@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "erc1363-payable-token/contracts/token/ERC1363/ERC1363.sol";
-import "@openzeppelin/contracts/utils/math/Math.sol";
+import {ERC1363, ERC20} from "erc1363-payable-token/contracts/token/ERC1363/ERC1363.sol";
+import {Math} from "@openzeppelin/contracts/utils/math/Math.sol";
 
-// for a constant bonding curve amount of tokens you get per eth sent in.
-uint constant TOKEN_PER_ETHWEI = 1;
 
 contract TokenBuySellBonding is ERC1363 {
         constructor(
@@ -35,6 +33,7 @@ contract TokenBuySellBonding is ERC1363 {
      */
     function _amountEthOut(uint256 tokenIn) private view returns (uint){ 
         uint256 totalSupply = totalSupply();
+        require(totalSupply >= tokenIn, "Not enough totalSupply for this.");
         uint256 _collateralBalance = totalSupply ** 2 / 2;
         uint256 newCollateralBalance = (totalSupply - tokenIn) ** 2 / 2;
 
@@ -66,4 +65,18 @@ contract TokenBuySellBonding is ERC1363 {
         // set new value in _balances in ERC20 (it is private so need to call function)
         _mint(msg.sender, tokenCredit);
     }
+
+    /**
+    Sell the tokens for ETH.
+     */
+     function sell(uint256 tokenIn) public returns (bool, address){
+
+        uint256 amountEth = _amountEthOut(tokenIn);
+        require(address(this).balance >= tokenIn);
+        (bool sent, ) = payable(msg.sender).call{value: amountEth}(abi.encode(1));
+        // reduce the total supply by tokenIn.  
+        _burn(msg.sender, tokenIn);
+
+        return (sent, msg.sender);
+     }
 }
