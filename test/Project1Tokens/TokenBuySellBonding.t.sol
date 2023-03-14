@@ -1,16 +1,15 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
+// import {DSTest} from "ds-test/test.sol";
 import "../../src/Project1Tokens/TokenBuySellBonding.sol";  
 
 contract TokenBuySellBondingTest is Test {
     TokenBuySellBonding public token;
 
+    // defult EOA from which transactions are sent
     address defaultAdd = 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496;
-
-    address add1 = 0xE0f5206BBD039e7b0592d8918820024e2a7437b9;
-    address add2 = 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266;
 
     function setUp() public {
         token = new TokenBuySellBonding("Witch", "WTCH");
@@ -50,26 +49,45 @@ contract TokenBuySellBondingTest is Test {
         assert(buyQuoteAfter < buyQuoteBefore);
     }
 
+    /**
+    Test selling tokens back to contact.  
+     */
     function testBondingSell() public {
         address someRandomUser = vm.addr(1);
-        vm.deal(someRandomUser, 10 ether);
-        console.log("someRandomUser: %s", someRandomUser);
+        uint256 userStartingBalanceETH = 10 ether; 
+        vm.deal(someRandomUser, userStartingBalanceETH);
         vm.startPrank(someRandomUser);
+        uint256 amountWei2Send = 1_000_000_000_000;
         
-
-        (bool sent, ) = address(token).call{value: 1000000000000}("");  // recommended way of sending ETH to a contract
+        (bool sent, ) = address(token).call{value: amountWei2Send}("");  // recommended way of sending ETH to a contract
         assert(sent);
-        console.log("balance of our token contract: %s", address(token).balance);
+
+        // make sure the contract got the ETH we sent
+        uint256 contractETHBalance = address(token).balance;
+        console.log("ETH balance of our token contract: %s", contractETHBalance);
+        assert(contractETHBalance == amountWei2Send);
+
+        // make sure we have some tokens
         uint256 allOurTokens = token.balanceOf(someRandomUser);
-        console.log("number of tokens: %d", allOurTokens);
-        console.log("token.quoteSell(allOurTokens): %d", token.quoteSell(allOurTokens));
-        // sell tokens back (reverse transaction)
-        (bool sellWorked, address whoWeRefunded) = token.sell(allOurTokens);
-        console.log("sending tokens to: %s", whoWeRefunded);
-        console.log("sell worked: %s", sellWorked);
-        console.log("original sender's eth balance: %s", someRandomUser.balance);
-        console.log("totalSupply: %d", token.totalSupply());
-        console.log("balance of our token contract: %s", address(token).balance);
+        assert(allOurTokens > 0); 
+        console.log("number of tokens user received: %d", allOurTokens);
+
+        uint256 userETHBalanceBeforeSell = someRandomUser.balance;
+
+        // sell back tokens
+        uint saleQuote = token.quoteSell(allOurTokens);
+        console.log("token.quoteSell(allOurTokens): %d", saleQuote);
+        uint saleAmount = token.sell(allOurTokens);
+        assert(saleAmount == saleQuote);
+
+        // make sure the ETH collateral has made it back to the user
+        assert(someRandomUser.balance == userETHBalanceBeforeSell + saleAmount);
+        assert(token.totalSupply() == 0);
+
+        // check the before and after are within 1% of each other
+        uint256 delta = userStartingBalanceETH / 100; 
+        assertApproxEqRel(userStartingBalanceETH, someRandomUser.balance, delta);
+
         vm.stopPrank();
     }
 }

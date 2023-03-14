@@ -67,16 +67,20 @@ contract TokenBuySellBonding is ERC1363 {
     }
 
     /**
-    Sell the tokens for ETH.
+    Sell the tokens for ETH.  Will fail if the ETH collateral cannot be sent
+    back to the sender.  
+    If sucessful will return the amount of ETH collateral sent back to user.
      */
-     function sell(uint256 tokenIn) public returns (bool, address){
+     function sell(uint256 tokenIn) public returns (uint256) {
 
         uint256 amountEth = _amountEthOut(tokenIn);
         require(address(this).balance >= tokenIn);
         (bool sent, ) = payable(msg.sender).call{value: amountEth}(abi.encode(1));
+        require(sent);
+
         // reduce the total supply by tokenIn.  
         _burn(msg.sender, tokenIn);
 
-        return (sent, msg.sender);
+        return amountEth;
      }
 }
