@@ -17,7 +17,7 @@ contract TokenBuySellBonding is ERC1363 {
     per ETH sent.  This determines the amount to mint, based on a linear
     bonding curve.
      */
-    function _amountTokensOut(uint256 ethIn) private view returns (uint){
+    function _amountTokensOut(uint256 ethIn) private view returns (uint) {
 
         // get the total supply 
         uint256 totalSupply = totalSupply();
@@ -31,7 +31,7 @@ contract TokenBuySellBonding is ERC1363 {
     Used to reverse the bonding curve.  We have the number of tokens the user
     wants to sell, and we need to return the amount of eth.  
      */
-    function _amountEthOut(uint256 tokenIn) private view returns (uint){ 
+    function _amountEthOut(uint256 tokenIn) private view returns (uint) { 
         uint256 totalSupply = totalSupply();
         require(totalSupply >= tokenIn, "Not enough totalSupply for this.");
         uint256 _collateralBalance = totalSupply ** 2 / 2;
@@ -44,7 +44,7 @@ contract TokenBuySellBonding is ERC1363 {
     Gives the user a hypothetical amount of tokens they would receive from 
     buying.  
      */
-    function quoteBuy(uint256 ethIn) public view returns (uint){
+    function quoteBuy(uint256 ethIn) public view returns (uint) {
         return _amountTokensOut(ethIn);
     }
 
@@ -52,7 +52,7 @@ contract TokenBuySellBonding is ERC1363 {
     Gives the user a quote of amout of ETH they would recieve from selling
     tokens.
      */
-    function quoteSell(uint256 tokenIn) public view returns (uint){
+    function quoteSell(uint256 tokenIn) public view returns (uint) {
         return _amountEthOut(tokenIn);
     }
 
