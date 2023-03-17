@@ -10,3 +10,6 @@
 	path = lib/erc1363-payable-token
 	url = https://github.com/vittominacori/erc1363-payable-token
 	branch = v4.8.2
+[submodule "lib/murky"]
+	path = lib/murky
+	url = https://github.com/dmfxyz/murky
