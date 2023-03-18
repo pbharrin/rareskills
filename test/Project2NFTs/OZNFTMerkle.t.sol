@@ -1,20 +1,34 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-import "forge-std/Test.sol";
-import "forge-std/console.sol";
+// import "forge-std/Test.sol";
+// import "forge-std/console.sol";
+import {Test, console} from "forge-std/Test.sol";
+
 import "../../src/Project2NFTs/OZNFTMerkle.sol";  
 
 contract OZNFTMerkleTest is Test {
     OZNFTMerkle public merkleNFT;
+    address add1 = vm.addr(1);
+    address add2 = vm.addr(2);
+    address add3 = vm.addr(3);
+
+    // create Merkle Root for valid pre sale addresses
+    Merkle m = new Merkle();
+
+    bytes32[] data = new bytes32[](2);
+
+    bytes32 root;
+    bytes32[] proof1;
 
     function setUp() public {
-        merkleNFT = new OZNFTMerkle();
-    }
+        data[0] = keccak256(abi.encodePacked(add1));
+        data[1] = keccak256(abi.encodePacked(add2));
 
-    function createMerkelRoot() public pure returns (bytes32) {
-        address aa1 = vm.addr(1); 
-        return keccak256(abi.encodePacked(aa1));
+        root = m.getRoot(data);
+        proof1 = m.getProof(data, 0);
+
+        merkleNFT = new OZNFTMerkle();
     }
 
 
@@ -24,18 +38,26 @@ contract OZNFTMerkleTest is Test {
      */
     function testPresale() public {
 
-        // create Merkle Root for valid pre sale addresses
-        bytes32 root = createMerkelRoot();
         merkleNFT.setMerkleRoot(root);
 
-        address add1 = vm.addr(1);
-
+        
         vm.deal(add1, 1 ether);
         vm.startPrank(add1);
 
-        myProof = 
-        merkleNFT.presale();
+        uint256 amntSent = merkleNFT.presale{value: 1 ether}(proof1);
+        console.log("amount sent with TXN: %s", amntSent );
 
+        // This should fail because no money was sent.  
+        assert(merkleNFT.tokenSupply() == 1 );
+        assert(merkleNFT.balanceOf(add1) == 1);
+        assert(merkleNFT.ownerOf(0) == add1);
+
+        vm.stopPrank();
+
+        vm.startPrank(add3);
+        vm.expectRevert("Invalid merkle proof");
+        // merkleNFT.presale(proof1);
+        merkleNFT.presale{value: 1 ether}(proof1);
         vm.stopPrank();
     }
 

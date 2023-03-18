@@ -6,14 +6,16 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import {Merkle} from "murky/Merkle.sol";
+
 
 contract OZNFTMerkle is ERC721, Ownable {
     using ECDSA for bytes32;
 
     uint256 public tokenSupply = 0;  // amount of NFTs currently minted
     uint256 public constant MAX_SUPPLY = 10;
-    uint256 public constant PRICE = 1 ether;
-    uint256 public constant PRICE_PRE = 0.1 ether;
+    uint256 public constant PRICE = 2 ether;
+    uint256 public constant PRICE_PRE = 1 ether;
 
     // for Merkle tree
     bytes32 public merkleRoot;
@@ -50,16 +52,17 @@ contract OZNFTMerkle is ERC721, Ownable {
     Presale function with Merkle tree to check if an address has done 
     a presale or not. 
      */
-    function presale(bytes32[] calldata _proof) external payable {
-        require(tokenSupply < MAX_SUPPLY);
-        require(msg.value != PRICE_PRE, "the presale price is not correct");
+    function presale(bytes32[] calldata _proof) external payable returns (uint256) {
+        require(tokenSupply < MAX_SUPPLY, "Token supply exceeds max.");
+        require(msg.value == PRICE_PRE, "the presale price is not correct");
 
         // Check if user can do a purchase and has not done one yet.
         validateByMerkleTree(_proof);
-        require(amountMintedSoFar[msg.sender] < 2);
+        require(amountMintedSoFar[msg.sender] < 1, "You have already done presale");
         amountMintedSoFar[msg.sender]++; 
         _mint(msg.sender, tokenSupply);
         tokenSupply++;
+        return msg.value;
     }
 
 
