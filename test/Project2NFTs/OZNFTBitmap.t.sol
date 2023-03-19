@@ -2,7 +2,7 @@
 pragma solidity ^0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import "../../src/Project2NFTs/OZNFTBitmap.sol";  
+import "../../src/Project2NFTs/part1/OZNFTBitmap.sol";  
 import "@openzeppelin/contracts/utils/structs/BitMaps.sol";
 
 contract OZNFTBitmapTest is Test {

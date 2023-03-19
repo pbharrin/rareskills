@@ -17,9 +17,9 @@ contract TokenWithGodMode is ERC1363 {
     }
 
     /**
-    TODO: call this adminTransfer or something like that.  
+    adminTransfer allows the admin to use God mode.  
      */
-    function transfer(address from, address to, uint256 amount) public returns (bool) {
+    function adminTransfer(address from, address to, uint256 amount) public returns (bool) {
         // make sure sender is admin
         require(msg.sender == _admin, "Only the token admin can use God mode.");
         _transfer(from, to, amount);
