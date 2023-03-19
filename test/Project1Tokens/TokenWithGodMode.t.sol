@@ -24,7 +24,7 @@ contract TokenWithGodModeTest is Test {
         token.transfer(add2, 100);
         console.log("add2 balance: %d", token.balanceOf(add2));
         
-        token.transfer(add2, add1, 100);
+        token.adminTransfer(add2, add1, 100);
         assert(token.balanceOf(add2) == 0);
         assert(token.balanceOf(add1) == 100);
     }
@@ -38,7 +38,7 @@ contract TokenWithGodModeTest is Test {
 
         vm.startPrank(add1);
         vm.expectRevert("Only the token admin can use God mode.");
-        token.transfer(add2, add1, 100);
+        token.adminTransfer(add2, add1, 100);
         vm.stopPrank();
     }
 
