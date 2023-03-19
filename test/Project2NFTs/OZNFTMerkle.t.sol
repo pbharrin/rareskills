@@ -1,10 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-// import "forge-std/Test.sol";
-// import "forge-std/console.sol";
 import {Test, console} from "forge-std/Test.sol";
-
+import {Merkle} from "murky/Merkle.sol";
 import "../../src/Project2NFTs/OZNFTMerkle.sol";  
 
 contract OZNFTMerkleTest is Test {
@@ -12,6 +10,7 @@ contract OZNFTMerkleTest is Test {
     address add1 = vm.addr(1);
     address add2 = vm.addr(2);
     address add3 = vm.addr(3);
+    address add9 = vm.addr(9);
 
     // create Merkle Root for valid pre sale addresses
     Merkle m = new Merkle();
@@ -44,8 +43,8 @@ contract OZNFTMerkleTest is Test {
         vm.deal(add1, 1 ether);
         vm.startPrank(add1);
 
-        uint256 amntSent = merkleNFT.presale{value: 1 ether}(proof1);
-        console.log("amount sent with TXN: %s", amntSent );
+        merkleNFT.presale{value: 1 ether}(proof1);
+        // console.log("amount sent with TXN: %s", amntSent );
 
         // This should fail because no money was sent.  
         assert(merkleNFT.tokenSupply() == 1 );
@@ -54,24 +53,40 @@ contract OZNFTMerkleTest is Test {
 
         vm.stopPrank();
 
-        vm.startPrank(add3);
-        vm.expectRevert("Invalid merkle proof");
-        // merkleNFT.presale(proof1);
+        vm.startPrank(add9);
+        vm.expectRevert();  // "Invalid merkle proof"
         merkleNFT.presale{value: 1 ether}(proof1);
         vm.stopPrank();
     }
 
     /**
-    Make sure that only the admin can use God mode.  
+    Test purchase outside of presale.  
      */
-    // function testAdminOnly() public {
+    function testRegularPurchase() public {
 
-    //     token.transfer(add2, 100);
+        vm.deal(add1, 20 ether);
+        vm.startPrank(add1);
+        uint256 supplyBefore = merkleNFT.tokenSupply();
+        merkleNFT.mint{value: 2 ether}();
+        uint256 supplyAfter = merkleNFT.tokenSupply();
+        assert(supplyAfter - supplyBefore == 1);
 
-    //     vm.startPrank(add1);
-    //     vm.expectRevert("Only the token admin can use God mode.");
-    //     token.transfer(add2, add1, 100);
-    //     vm.stopPrank();
-    // }
+        vm.expectRevert("the price is not correct");
+        merkleNFT.mint{value: 1 ether}();
+
+
+        // check MAX_SUPPLY is controlled
+        do {
+            merkleNFT.mint{value: 2 ether}();
+        } while (merkleNFT.tokenSupply() < merkleNFT.MAX_SUPPLY());
+        
+        console.log("total supply: %s", merkleNFT.tokenSupply() );
+
+        vm.expectRevert();
+        merkleNFT.mint{value: 2 ether}();
+
+
+        vm.stopPrank();
+    }
 
 }

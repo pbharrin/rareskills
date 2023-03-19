@@ -6,7 +6,6 @@ import {ERC721} from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
-import {Merkle} from "murky/Merkle.sol";
 
 
 contract OZNFTMerkle is ERC721, Ownable {
@@ -23,15 +22,16 @@ contract OZNFTMerkle is ERC721, Ownable {
 
     constructor() ERC721("MySweetNFT", "MSNT"){}
 
-    // TODO: NOT SAFE FOR PRODUCTION, ANYONE CAN EDIT
-    // this could also be set in the constructor 
-    function setMerkleRoot(bytes32 _merkleRoot) external {
+    /**
+    Sets the Merkle root.  
+     */
+    function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
         merkleRoot = _merkleRoot;
     }
 
     function mint() external payable {
-        require(tokenSupply < MAX_SUPPLY);
-        require(msg.value != PRICE, "the price is not correct");
+        require(tokenSupply < MAX_SUPPLY, "The MAX_SUPPLY has been reached");
+        require(msg.value == PRICE, "the price is not correct");
         _mint(msg.sender, tokenSupply);
         tokenSupply++;
     }
