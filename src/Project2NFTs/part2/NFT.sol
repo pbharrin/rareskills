@@ -17,7 +17,7 @@ contract LincolnNFT is ERC721, Ownable {
 
     function mint() external payable {
         require(tokenSupply < MAX_SUPPLY);
-        require(msg.value != PRICE, "the price is not correct");
+        require(msg.value == PRICE, "the price is not correct");
         _mint(msg.sender, tokenSupply);
         tokenSupply++;
     }
