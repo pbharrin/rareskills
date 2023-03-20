@@ -11,9 +11,7 @@ contract LincolnNFT is ERC721, Ownable {
     uint256 public constant MAX_SUPPLY = 10;
     uint256 public constant PRICE = 1 ether;
 
-    constructor() ERC721("LincolnNFT", "LNCN"){
-
-    }
+    constructor() ERC721("LincolnNFT", "LNCN"){}
 
     function mint() external payable {
         require(tokenSupply < MAX_SUPPLY);
@@ -35,9 +33,5 @@ contract LincolnNFT is ERC721, Ownable {
 
     function transferOwnership(address) pure public override {
         require(false, "cannot transfer ownership");
-    }
-
-    function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmY96okp5ZLkSEyKu5m6tbes83BAEGRsfdkk2akbrMP9Fg/";
     }
 }
