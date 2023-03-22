@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity 0.8.13;
 
 import "forge-std/Test.sol";
-import "../../src/Project1Tokens/TokenWithSanctions.sol";  
+import "../../src/Project1Tokens/TokenWithSanctions.sol";
 
 contract TokenWithSanctionsTest is Test {
     TokenWithSanctions public token;
@@ -16,7 +16,7 @@ contract TokenWithSanctionsTest is Test {
     }
 
     // check to see if the ban function works
-    function testNoAddressBanned() view public {
+    function testNoAddressBanned() public view {
         // no one banned
         assert(!token.status(add1));
         assert(!token.status(add2));
@@ -46,7 +46,7 @@ contract TokenWithSanctionsTest is Test {
         // send tokens to account 2
         token.transfer(add2, 100);
 
-        // ban address2 
+        // ban address2
         token.banAddress(add1);
         vm.startPrank(add2);
         vm.expectRevert("Sorry the to or from addresses are banned.");
@@ -55,13 +55,12 @@ contract TokenWithSanctionsTest is Test {
     }
 
     /**
-    Test using another form of transfer.  
+     * Test using another form of transfer.
      */
     function testTransferFrom() public {
-
         token.transfer(vm.addr(2), 200);
         vm.startPrank(vm.addr(2));
-        // approve vm.addr(1) to spend tokens 
+        // approve vm.addr(1) to spend tokens
         token.approve(vm.addr(1), 200);
         vm.stopPrank();
 
@@ -80,5 +79,4 @@ contract TokenWithSanctionsTest is Test {
         token.transferFrom(vm.addr(2), vm.addr(1), 100);
         vm.stopPrank();
     }
-
 }

@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity 0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
 import {Merkle} from "murky/Merkle.sol";
-import "../../src/Project2NFTs/part1/OZNFTMerkle.sol";  
+import "../../src/Project2NFTs/part1/OZNFTMerkle.sol";
 
 contract OZNFTMerkleTest is Test {
     OZNFTMerkle public merkleNFT;
@@ -30,53 +30,48 @@ contract OZNFTMerkleTest is Test {
         console.log("root: ");
         console.logBytes32(root);
         console.log("proof 2: ");
-        console.logBytes32(m.getProof(data, 2)[0]);  //proofs are arrays of 2
+        console.logBytes32(m.getProof(data, 2)[0]); //proofs are arrays of 2
         console.logBytes32(m.getProof(data, 2)[1]);
         console.log("proof 3: ");
         console.logBytes32(m.getProof(data, 3)[0]);
         console.logBytes32(m.getProof(data, 3)[1]);
-        
+
         proof1 = m.getProof(data, 0);
         console.log("proof array length: %d", proof1.length);
 
         merkleNFT = new OZNFTMerkle();
     }
 
-
     /**
-    Test if we can add an address to the Merkle tree and then the address
-    can buy an NFT in the presale.    
+     * Test if we can add an address to the Merkle tree and then the address
+     * can buy an NFT in the presale.
      */
     function testPresale() public {
-        
-
         merkleNFT.setMerkleRoot(root);
 
-        
         vm.deal(add1, 1 ether);
         vm.startPrank(add1);
 
         merkleNFT.presale{value: 1 ether}(proof1);
         // console.log("amount sent with TXN: %s", amntSent );
 
-        // This should fail because no money was sent.  
-        assert(merkleNFT.tokenSupply() == 1 );
+        // This should fail because no money was sent.
+        assert(merkleNFT.tokenSupply() == 1);
         assert(merkleNFT.balanceOf(add1) == 1);
         assert(merkleNFT.ownerOf(0) == add1);
 
         vm.stopPrank();
 
         vm.startPrank(add9);
-        vm.expectRevert();  // "Invalid merkle proof"
+        vm.expectRevert(); // "Invalid merkle proof"
         merkleNFT.presale{value: 1 ether}(proof1);
         vm.stopPrank();
     }
 
     /**
-    Test purchase outside of presale.  
+     * Test purchase outside of presale.
      */
     function testRegularPurchase() public {
-
         vm.deal(add1, 20 ether);
         vm.startPrank(add1);
         uint256 supplyBefore = merkleNFT.tokenSupply();
@@ -86,7 +81,6 @@ contract OZNFTMerkleTest is Test {
 
         vm.expectRevert("the price is not correct");
         merkleNFT.mint{value: 1 ether}();
-
 
         // check MAX_SUPPLY is controlled
         do {

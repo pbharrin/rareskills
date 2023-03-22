@@ -1,15 +1,13 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.13;
+pragma solidity 0.8.13;
 
 import {Test, console} from "forge-std/Test.sol";
-import {RewardToken} from "../../src/Project2NFTs/part2/Token.sol";  
-import {LincolnNFT} from "../../src/Project2NFTs/part2/NFT.sol";  
-import {Vault} from "../../src/Project2NFTs/part2/Vault.sol";  
-
+import {RewardToken} from "../../src/Project2NFTs/part2/Token.sol";
+import {LincolnNFT} from "../../src/Project2NFTs/part2/NFT.sol";
+import {Vault} from "../../src/Project2NFTs/part2/Vault.sol";
 
 contract NFTStakingRewardsTest is Test {
-
-    RewardToken public rewardToken;  
+    RewardToken public rewardToken;
     LincolnNFT public collection;
     Vault public vault;
 
@@ -41,18 +39,18 @@ contract NFTStakingRewardsTest is Test {
         vault.stake(0);
 
         // check the rewards earned
-        uint balBefore = rewardToken.balanceOf(DEFAULT_ADD);
-        uint time0 = block.timestamp;
+        uint256 balBefore = rewardToken.balanceOf(DEFAULT_ADD);
+        uint256 time0 = block.timestamp;
         console.log("current token balance: %d", balBefore);
 
-        vm.warp(time0 + 1 days);  // jump ahead 1 day
+        vm.warp(time0 + 1 days); // jump ahead 1 day
 
-        uint rewardsEarned = vault.rewardsAvailable(0);
+        uint256 rewardsEarned = vault.rewardsAvailable(0);
         assert(rewardsEarned == 10 ether);
 
         // check collectRewards()
         vault.collectRewards(0);
-        uint balAfter = rewardToken.balanceOf(DEFAULT_ADD);
+        uint256 balAfter = rewardToken.balanceOf(DEFAULT_ADD);
         console.log("current token balance: %d", balAfter);
         assert(balAfter - balBefore == rewardsEarned);
     }
