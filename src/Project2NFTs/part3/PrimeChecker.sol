@@ -9,7 +9,7 @@ contract PrimeChecker {
     
     NFTEnumerable _collection;    // Ref to our NFT contract
 
-    uint[8] primes20 = [1, 3, 5, 7, 11, 13, 17, 19];
+    uint[8] primes20 = [2, 3, 5, 7, 11, 13, 17, 19];
     mapping(uint => bool) primes;
 
     constructor(NFTEnumerable collection){

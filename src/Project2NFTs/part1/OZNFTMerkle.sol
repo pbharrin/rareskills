@@ -81,7 +81,8 @@ contract OZNFTMerkle is ERC721, Ownable {
         require(false, "cannot transfer ownership");
     }
 
+    // Points to the ipfs dir with the metadata
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmY96okp5ZLkSEyKu5m6tbes83BAEGRsfdkk2akbrMP9Fg/";
+        return "ipfs://QmQwFXwFDoagfQ5VVWeBzyaBm2DhoBZzVX2P9wPK27nqkp/";
     }
 }

@@ -57,7 +57,7 @@ contract OZNFTBitmap is ERC721, Ownable, ERC2981 {
                         bytes32(uint256(uint160(msg.sender))),
                         bytes32(ticketNum)
                     )
-                ).recover(_signature), "not allowed"
+                ).recover(_signature), "verify signature failed"
         );
     }
 
@@ -111,7 +111,6 @@ contract OZNFTBitmap is ERC721, Ownable, ERC2981 {
         return msg.value;
     }
 
-
     /**
     Only the owner can withdraw funds.
      */
@@ -127,8 +126,9 @@ contract OZNFTBitmap is ERC721, Ownable, ERC2981 {
         require(false, "cannot transfer ownership");
     }
 
+    // Points to the ipfs dir with the metadata
     function _baseURI() internal pure override returns (string memory) {
-        return "ipfs://QmY96okp5ZLkSEyKu5m6tbes83BAEGRsfdkk2akbrMP9Fg/";
+        return "ipfs://QmQwFXwFDoagfQ5VVWeBzyaBm2DhoBZzVX2P9wPK27nqkp/";
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
