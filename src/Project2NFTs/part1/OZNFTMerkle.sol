@@ -7,11 +7,10 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
-
 contract OZNFTMerkle is ERC721, Ownable {
     using ECDSA for bytes32;
 
-    uint256 public tokenSupply = 0;  // amount of NFTs currently minted
+    uint256 public tokenSupply = 0; // amount of NFTs currently minted
     uint256 public constant MAX_SUPPLY = 10;
     uint256 public constant PRICE = 2 ether;
     uint256 public constant PRICE_PRE = 1 ether;
@@ -20,10 +19,10 @@ contract OZNFTMerkle is ERC721, Ownable {
     bytes32 public merkleRoot;
     mapping(address => uint256) amountMintedSoFar;
 
-    constructor() ERC721("MySweetNFT", "MSNT"){}
+    constructor() ERC721("MySweetNFT", "MSNT") {}
 
     /**
-    Sets the Merkle root.  
+     * Sets the Merkle root.
      */
     function setMerkleRoot(bytes32 _merkleRoot) external onlyOwner {
         merkleRoot = _merkleRoot;
@@ -37,20 +36,17 @@ contract OZNFTMerkle is ERC721, Ownable {
     }
 
     /**
-    Function to check if the merkleProof matches known addresses.  
+     * Function to check if the merkleProof matches known addresses.
      */
     function validateByMerkleTree(bytes32[] calldata merkleProof) private view {
         require(
-            MerkleProof.verify(
-                merkleProof,
-                merkleRoot,
-                keccak256(abi.encodePacked(msg.sender))),
-        "Invalid merkle proof");
+            MerkleProof.verify(merkleProof, merkleRoot, keccak256(abi.encodePacked(msg.sender))), "Invalid merkle proof"
+        );
     }
 
     /**
-    Presale function with Merkle tree to check if an address has done 
-    a presale or not. 
+     * Presale function with Merkle tree to check if an address has done 
+     * a presale or not.
      */
     function presale(bytes32[] calldata _proof) external payable returns (uint256) {
         require(tokenSupply < MAX_SUPPLY, "Token supply exceeds max.");
@@ -59,25 +55,24 @@ contract OZNFTMerkle is ERC721, Ownable {
         // Check if user can do a purchase and has not done one yet.
         validateByMerkleTree(_proof);
         require(amountMintedSoFar[msg.sender] < 1, "You have already done presale");
-        amountMintedSoFar[msg.sender]++; 
+        amountMintedSoFar[msg.sender]++;
         _mint(msg.sender, tokenSupply);
         tokenSupply++;
         return msg.value;
     }
 
-
     /**
-    Only the owner can withdraw funds.
+     * Only the owner can withdraw funds.
      */
     function withdraw() external onlyOwner {
         payable(msg.sender).transfer(address(this).balance);
     }
 
-    function renounceOwnership() pure public override {
+    function renounceOwnership() public pure override {
         require(false, "cannot renounce ownership");
     }
 
-    function transferOwnership(address) pure public override {
+    function transferOwnership(address) public pure override {
         require(false, "cannot transfer ownership");
     }
 

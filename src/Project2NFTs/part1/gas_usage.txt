@@ -1,0 +1,8 @@
+contract    function name   state notes gas cost(total)
+OZNFTMerkle.sol setMerkleRoot   from fresh start    53442
+OZNFTMerkle.sol setMerkleRoot   has value set    30557
+OZNFTMerkle.sol presale   from fresh start    136974
+
+OZNFTBitmap.sol setAllowList2SigningAddress   from fresh start    31049
+OZNFTBitmap.sol presale NOT using BitMap    122449
+OZNFTBitmap.sol presale  using BitMap    83133

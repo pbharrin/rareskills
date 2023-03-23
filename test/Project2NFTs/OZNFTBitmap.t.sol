@@ -37,6 +37,39 @@ contract OZNFTBitmapTest is Test {
     }
 
     /**
+     * Modified code from SO, this can be used for any length of bytes with a 2 modifications.
+     */
+    function bytes65ToString(bytes memory _bytes) public pure returns (string memory) {
+        // bytes32 _bytes = bytes32(uint256(_address));
+        bytes memory HEX = "0123456789abcdef";
+        bytes memory _string = new bytes(132); // 2 + 65 * 2
+        _string[0] = "0";
+        _string[1] = "x";
+        for (uint256 i = 0; i < 65; i++) {
+            _string[2 + i * 2] = HEX[uint8(_bytes[i] >> 4)];
+            _string[3 + i * 2] = HEX[uint8(_bytes[i] & 0x0f)];
+        }
+        return string(_string);
+    }
+
+    /**
+     * Sign some addresses to use externally.
+     */
+    function testExternalPrep() public view {
+        console.log("signerAdd: (set this after deploy) %s", vm.addr(privateKey));
+
+        address remixAdd = 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4;
+        console.log("remixAdd: %s", remixAdd);
+
+        uint256 tokenNum = 0;
+        bytes memory signature = signTokenNum(tokenNum, remixAdd);
+        console.log("remixAdd signed for %d: %s", tokenNum, bytes65ToString(signature));
+        tokenNum = 1;
+        signature = signTokenNum(tokenNum, remixAdd);
+        console.log("remixAdd signed for %d: %s", tokenNum, bytes65ToString(signature));
+    }
+
+    /**
      * Test presale with the mapping checking if a token was taken.
      */
     function testPresale() public {
