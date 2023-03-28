@@ -77,7 +77,9 @@ I am unclear about this error.
 
 ### Error 3: Potential use of "block.number" as source of randonmness.
 
->The relevant parts of the warning are: The environment variable "block.number" looks like it might be used as a source of randomness. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner.
+The relevant parts of the warning are: 
+
+>The environment variable "block.number" looks like it might be used as a source of randomness. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner.
 
 This appears in: ```src/Project2NFTs/part2/Vault.sol```.  I do not think this is a potential problem or will cause problems with the desired application: minting rewards.  
 
