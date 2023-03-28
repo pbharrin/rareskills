@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity 0.8.18;
 
 import {ERC1363, ERC20, IERC20} from "erc1363-payable-token/contracts/token/ERC1363/ERC1363.sol";
 
 contract TokenWithSanctions is ERC1363 {
     mapping(address => bool) private _isBanned;
-    address private _admin;
+    address private immutable _admin;
 
     constructor(string memory _name, string memory _symbol, uint256 _initialSupply) ERC20(_name, _symbol) {
         // set initial supply, and admin

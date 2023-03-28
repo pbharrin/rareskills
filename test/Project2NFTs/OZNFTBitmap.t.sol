@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity 0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
 import "../../src/Project2NFTs/part1/OZNFTBitmap.sol";
@@ -81,9 +81,48 @@ contract OZNFTBitmapTest is Test {
         vm.startPrank(add2);
         bitmapNFT.presale{value: 1 ether}(0, signature, false);
 
+        // try to reuse ticket
+        vm.expectRevert("You have already done presale");
+        bitmapNFT.presale{value: 1 ether}(0, signature, false);
+
         // try another presale
         vm.expectRevert("verify signature failed");
         bitmapNFT.presale{value: 1 ether}(1, signature, false);
+        vm.stopPrank();
+
+        signature = signTokenNum(1, address(this));
+        vm.expectRevert("the presale price is not correct");
+        bitmapNFT.presale{value: 0.69 ether}(1, signature, false);
+    }
+
+    function testMint() public {
+        vm.expectRevert("the price is not correct");
+        bitmapNFT.mint();
+
+        bitmapNFT.mint{value: 2 ether}();
+        assert(bitmapNFT.balanceOf(address(this)) == 1);
+
+        for (uint256 i = 1; i < bitmapNFT.MAX_SUPPLY(); ++i) {
+            bitmapNFT.mint{value: 2 ether}();
+        }
+
+        vm.expectRevert("The MAX_SUPPLY has been reached");
+        bitmapNFT.mint{value: 2 ether}();
+
+        bytes memory signature = signTokenNum(11, address(this));
+        vm.expectRevert("Token supply exceeds max.");
+        bitmapNFT.presale{value: 1 ether}(11, signature, false);
+    }
+
+    function testSetAllowListSigner() public {
+        vm.expectRevert("The zero address cannot sign messages.");
+        bitmapNFT.setAllowList2SigningAddress(address(0));
+
+        bitmapNFT.setAllowList2SigningAddress(add2);
+
+        vm.startPrank(add2);
+        vm.expectRevert("Ownable: caller is not the owner");
+        bitmapNFT.setAllowList2SigningAddress(add2);
         vm.stopPrank();
     }
 
@@ -103,5 +142,62 @@ contract OZNFTBitmapTest is Test {
         vm.expectRevert("verify signature failed");
         bitmapNFT.presale{value: 1 ether}(1, signature, true);
         vm.stopPrank();
+    }
+
+    function testRenounce() public {
+        vm.expectRevert("cannot renounce ownership");
+        bitmapNFT.renounceOwnership();
+    }
+
+    function testTransfer() public {
+        vm.expectRevert("cannot transfer ownership");
+        bitmapNFT.transferOwnership(add2);
+    }
+
+    function testClaimErrors() public {
+        bytes memory signature = signTokenNum(300, add2);
+        assert(signature.length == RSV_SIG_LEN);
+
+        // switch to address 2 and do presale
+        vm.deal(add2, 10 ether);
+        vm.startPrank(add2);
+        vm.expectRevert("ticket size too large");
+        bitmapNFT.presale{value: 1 ether}(300, signature, true);
+        vm.stopPrank();
+    }
+
+    function testBMClaimTwice() public {
+        bytes memory signature = signTokenNum(3, add2);
+        vm.deal(add2, 10 ether);
+        vm.startPrank(add2);
+        bitmapNFT.presale{value: 1 ether}(3, signature, true);
+        vm.expectRevert("this ticket has been claimed");
+        bitmapNFT.presale{value: 1 ether}(3, signature, true);
+        vm.stopPrank();
+    }
+
+    /**
+     * Make sure the owner can withdraw funds.
+     */
+    function testWithDraw() public {
+        bitmapNFT.mint{value: 2 ether}();
+        bitmapNFT.mint{value: 2 ether}();
+
+        uint256 contactBalanceBefore = address(bitmapNFT).balance;
+        uint256 balanceBeforeWithdraw = address(this).balance;
+        bitmapNFT.withdraw();
+        uint256 balanceAfterWithdraw = address(this).balance;
+        assert(contactBalanceBefore == balanceAfterWithdraw - balanceBeforeWithdraw);
+    }
+
+    function testBaseURI() public {
+        bitmapNFT.mint{value: 2 ether}();
+        bytes32 lhs = keccak256(abi.encode(bitmapNFT.tokenURI(0)));
+        bytes32 rhs = keccak256(abi.encode("ipfs://QmQwFXwFDoagfQ5VVWeBzyaBm2DhoBZzVX2P9wPK27nqkp/0"));
+        assert(lhs == rhs);
+    }
+
+    receive() external payable {
+        console.log("the contract receive was called");
     }
 }

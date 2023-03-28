@@ -57,7 +57,7 @@ address owner;
 constructor() ERC721("Enumer", "ENUM") {
 ```
 
-This error also appeared in: ```src/Project2NFTs/part3/PrimeChecker.sol`` three times.  
+This error also appeared in: ```src/Project2NFTs/part3/PrimeChecker.sol`` three times, and ```src/Project2NFTs/part2/Vault.sol``` five times.  
 
 ### Error 2: Requirement violation.
 
@@ -72,3 +72,12 @@ try IERC1363Spender(spender).onApprovalReceived(_msgSender(), amount, data) retu
 return retval == IERC1363Spender.onApprovalReceived.selector;
 } catch (bytes memory reason) {
 ```
+
+I am unclear about this error.  
+
+### Error 3: Potential use of "block.number" as source of randonmness.
+
+>The relevant parts of the warning are: The environment variable "block.number" looks like it might be used as a source of randomness. Note that the values of variables like coinbase, gaslimit, block number and timestamp are predictable and can be manipulated by a malicious miner.
+
+This appears in: ```src/Project2NFTs/part2/Vault.sol```.  I do not think this is a potential problem or will cause problems with the desired application: minting rewards.  
+

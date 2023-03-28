@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity 0.8.18;
 
 import {Test, console} from "forge-std/Test.sol";
 import {Merkle} from "murky/Merkle.sol";
@@ -9,7 +9,6 @@ contract OZNFTMerkleTest is Test {
     OZNFTMerkle public merkleNFT;
     address add1 = vm.addr(1);
     address add2 = vm.addr(2);
-    address add3 = vm.addr(3);
     address add9 = vm.addr(9);
 
     // create Merkle Root for valid pre sale addresses
