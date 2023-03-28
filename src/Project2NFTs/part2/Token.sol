@@ -7,7 +7,7 @@ import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 contract RewardToken is ERC1363, Ownable {
     // Mapping to create an allowed list of addresses that can mint.
     // This is needed for the vault address to mint rewards tokens.
-    mapping(address => bool) allowedMinters;
+    mapping(address => bool) private allowedMinters;
 
     constructor(string memory _name, string memory _symbol) ERC20(_name, _symbol) {}
 

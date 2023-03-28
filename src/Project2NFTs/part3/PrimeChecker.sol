@@ -4,12 +4,10 @@ pragma solidity ^0.8.13;
 import {NFTEnumerable} from "./NFTEnumerable.sol";
 
 contract PrimeChecker {
-    uint256 constant REWARDS_PER_DAY = 10 ether; // 10 tokens are rewarded, the token uses 18 decimals.
-
     NFTEnumerable _collection; // Ref to our NFT contract
 
-    uint256[8] primes20 = [2, 3, 5, 7, 11, 13, 17, 19];
-    mapping(uint256 => bool) primes;
+    uint256[8] public primes20 = [2, 3, 5, 7, 11, 13, 17, 19];
+    mapping(uint256 => bool) private primes;
 
     constructor(NFTEnumerable collection) {
         _collection = collection;

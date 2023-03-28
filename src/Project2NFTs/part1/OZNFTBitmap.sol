@@ -21,7 +21,6 @@ contract OZNFTBitmap is ERC721, Ownable, ERC2981 {
     uint256 private constant BITMAP_MAX_SIZE = 256;
     BitMaps.BitMap private bitmap;
 
-    // uint256[3] arr = [MAX_INT, MAX_INT, MAX_INT];
     // This should be set after the contract is deployed.
     address public allowListSigningAddress = address(1337);
 
@@ -69,19 +68,6 @@ contract OZNFTBitmap is ERC721, Ownable, ERC2981 {
         require(ticketsHaveBeenMinted[ticketNumber] < 1, "You have already done presale");
         ticketsHaveBeenMinted[ticketNumber] = 1;
     }
-
-    /**
-     * Uses a home brew Bitmap to claim the ticket.
-     */
-    // function claimTicketBM(uint256 ticketNumber) private {
-    //     require(ticketNumber < arr.length * 256, "too large");
-    //     uint256 storageOffset = ticketNumber / 256;
-    //     uint256 offsetWithin256 = ticketNumber % 256;
-    //     uint256 storedBit = (arr[storageOffset] >> offsetWithin256) & uint256(1);
-    //     require(storedBit == 1, "already taken");
-
-    //     arr[storageOffset] = arr[storageOffset] & ~(uint256(1) << offsetWithin256);
-    // }
 
     /**
      * OpenZeppelin Bitmap version of claim ticket.

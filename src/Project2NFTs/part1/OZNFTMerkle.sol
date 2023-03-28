@@ -17,7 +17,7 @@ contract OZNFTMerkle is ERC721, Ownable {
 
     // for Merkle tree
     bytes32 public merkleRoot;
-    mapping(address => uint256) amountMintedSoFar;
+    mapping(address => uint256) private amountMintedSoFar;
 
     constructor() ERC721("MySweetNFT", "MSNT") {}
 

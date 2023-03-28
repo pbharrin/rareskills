@@ -9,7 +9,7 @@ contract NFTEnumerable is ERC721Enumerable {
     uint256 public tokenSupply = 0; // amount of NFTs currently minted
     uint256 public constant MAX_SUPPLY = 20;
     uint256 public constant PRICE = 1 ether;
-    address owner;
+    address public owner;
 
     constructor() ERC721("Enumer", "ENUM") {
         owner = msg.sender;
