@@ -1,0 +1,8 @@
+---
+ balanceContract: 1000000000000000000
+ testLimit: 50000
+ corpusDir: coverage
+ shrinkLimit: 5000
+ testMode: assertion
+ sender: ["0x30000"]
+ deployer: "0x10000"

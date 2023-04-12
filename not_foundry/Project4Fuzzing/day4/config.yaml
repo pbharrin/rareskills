@@ -1,0 +1,7 @@
+---
+ testLimit: 50000
+ corpusDir: coverage
+ testMode: assertion
+ #balanceContract: 100000000000000000000
+ # provide remappings
+ cryticArgs: ['--solc-remaps', '@=node_modules/@']

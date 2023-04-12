@@ -1,0 +1,9 @@
+---
+ testLimit: 50000
+ corpusDir: coverage
+ shrinkLimit: 5000
+ testMode: property
+ sender: ["0x30000"]
+ psender: "0x30000"
+ deployer: "0x10000"
+ seqLen: 100

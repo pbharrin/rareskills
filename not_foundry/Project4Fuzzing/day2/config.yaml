@@ -1,0 +1,7 @@
+---
+ balanceContract: 1000000000000000000
+ testLimit: 10000000
+ corpusDir: coverage
+ shrinkLimit: 5000
+ seqLen: 700
+ maxValue: 1000000000000000000
