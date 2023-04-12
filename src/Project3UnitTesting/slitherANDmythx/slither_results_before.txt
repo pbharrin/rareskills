@@ -1,0 +1,426 @@
+'forge clean' running (wd: /Users/pbharrin/Documents/GitHub/rareskills)
+'forge build --build-info --force' running
+Compiling 63 files with 0.8.13
+Solc 0.8.13 finished in 3.91s
+Compiler run successful
+
+INFO:Detectors:[91m
+TokenWithSanctionsTest.testTransferFrom() (test/Project1Tokens/TokenWithSanctions.t.sol#60-81) uses arbitrary from in transferFrom: transfered = token.transferFrom(vm.addr(2),vm.addr(1),100) (test/Project1Tokens/TokenWithSanctions.t.sol#70)
+TokenWithSanctionsTest.testTransferFrom() (test/Project1Tokens/TokenWithSanctions.t.sol#60-81) uses arbitrary from in transferFrom: token.transferFrom(vm.addr(2),vm.addr(1),100) (test/Project1Tokens/TokenWithSanctions.t.sol#79)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#arbitrary-from-in-transferfrom[0m
+INFO:Detectors:[91m
+Reentrancy in TokenBuySellBonding.sell(uint256) (src/Project1Tokens/TokenBuySellBonding.sol#68-78):
+	External calls:
+	- (sent) = address(msg.sender).call{value: amountEth}(abi.encode(1)) (src/Project1Tokens/TokenBuySellBonding.sol#71)
+	State variables written after the call(s):
+	- _burn(msg.sender,tokenIn) (src/Project1Tokens/TokenBuySellBonding.sol#75)
+		- _totalSupply -= amount (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#295)
+	ERC20._totalSupply (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#40) can be used in cross function reentrancies:
+	- ERC20._burn(address,uint256) (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#285-301)
+	- ERC20._mint(address,uint256) (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#259-272)
+	- ERC20.totalSupply() (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#94-96)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities[0m
+INFO:Detectors:[91m
+TokenWithGodModeTest.testTransfer() (test/Project1Tokens/TokenWithGodMode.t.sol#21-29) ignores return value by token.transfer(add2,100) (test/Project1Tokens/TokenWithGodMode.t.sol#23)
+TokenWithGodModeTest.testAdminOnly() (test/Project1Tokens/TokenWithGodMode.t.sol#34-41) ignores return value by token.transfer(add2,100) (test/Project1Tokens/TokenWithGodMode.t.sol#35)
+TokenWithSanctionsTest.testTransfer() (test/Project1Tokens/TokenWithSanctions.t.sol#45-55) ignores return value by token.transfer(add2,100) (test/Project1Tokens/TokenWithSanctions.t.sol#47)
+TokenWithSanctionsTest.testTransfer() (test/Project1Tokens/TokenWithSanctions.t.sol#45-55) ignores return value by token.transfer(add1,100) (test/Project1Tokens/TokenWithSanctions.t.sol#53)
+TokenWithSanctionsTest.testTransferFrom() (test/Project1Tokens/TokenWithSanctions.t.sol#60-81) ignores return value by token.transfer(vm.addr(2),200) (test/Project1Tokens/TokenWithSanctions.t.sol#61)
+TokenWithSanctionsTest.testTransferFrom() (test/Project1Tokens/TokenWithSanctions.t.sol#60-81) ignores return value by token.transferFrom(vm.addr(2),vm.addr(1),100) (test/Project1Tokens/TokenWithSanctions.t.sol#79)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unchecked-transfer[0m
+INFO:Detectors:[93m
+Vault.collectRewards(uint256) (src/Project2NFTs/part2/Vault.sol#75-88) uses a dangerous strict equality:
+	- require(bool,string)(owner == msg.sender,You must own an NFT to collect rewards on it.) (src/Project2NFTs/part2/Vault.sol#77)
+Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54) uses a dangerous strict equality:
+	- require(bool,string)(vault[tokenID].nftId == 0,this token is already staked) (src/Project2NFTs/part2/Vault.sol#41)
+Vault.unStake(uint256) (src/Project2NFTs/part2/Vault.sol#60-67) uses a dangerous strict equality:
+	- require(bool,string)(msg.sender == currentlyStaked.owner,You are not the owner of this NFT) (src/Project2NFTs/part2/Vault.sol#62)
+TokenBuySellBondingTest.testBondingBuy() (test/Project1Tokens/TokenBuySellBonding.t.sol#32-48) uses a dangerous strict equality:
+	- assert(bool)(buyQuoteBefore == token.balanceOf(defaultAdd)) (test/Project1Tokens/TokenBuySellBonding.t.sol#43)
+TokenBuySellBondingTest.testBondingSell() (test/Project1Tokens/TokenBuySellBonding.t.sol#53-90) uses a dangerous strict equality:
+	- assert(bool)(contractETHBalance == amountWei2Send) (test/Project1Tokens/TokenBuySellBonding.t.sol#66)
+TokenBuySellBondingTest.testBondingSell() (test/Project1Tokens/TokenBuySellBonding.t.sol#53-90) uses a dangerous strict equality:
+	- assert(bool)(saleAmount == saleQuote) (test/Project1Tokens/TokenBuySellBonding.t.sol#79)
+TokenBuySellBondingTest.testBondingSell() (test/Project1Tokens/TokenBuySellBonding.t.sol#53-90) uses a dangerous strict equality:
+	- assert(bool)(someRandomUser.balance == userETHBalanceBeforeSell + saleAmount) (test/Project1Tokens/TokenBuySellBonding.t.sol#82)
+TokenWithGodModeTest.testTransfer() (test/Project1Tokens/TokenWithGodMode.t.sol#21-29) uses a dangerous strict equality:
+	- assert(bool)(token.balanceOf(add2) == 0) (test/Project1Tokens/TokenWithGodMode.t.sol#27)
+TokenWithGodModeTest.testTransfer() (test/Project1Tokens/TokenWithGodMode.t.sol#21-29) uses a dangerous strict equality:
+	- assert(bool)(token.balanceOf(add1) == 100) (test/Project1Tokens/TokenWithGodMode.t.sol#28)
+NFTEnumerableTest.testAll20Primes() (test/Project2NFTs/EnumerableNFT.t.sol#34-39) uses a dangerous strict equality:
+	- assert(bool)(num2add == collection.balanceOf(DEFAULT_ADD)) (test/Project2NFTs/EnumerableNFT.t.sol#37)
+NFTEnumerableTest.testFirst3Primes() (test/Project2NFTs/EnumerableNFT.t.sol#24-31) uses a dangerous strict equality:
+	- assert(bool)(num2add == collection.balanceOf(DEFAULT_ADD)) (test/Project2NFTs/EnumerableNFT.t.sol#27)
+NFTEnumerableTest.testMultipleOwners() (test/Project2NFTs/EnumerableNFT.t.sol#42-54) uses a dangerous strict equality:
+	- assert(bool)(num2add == collection.balanceOf(DEFAULT_ADD)) (test/Project2NFTs/EnumerableNFT.t.sol#45)
+NFTEnumerableTest.testMultipleOwners() (test/Project2NFTs/EnumerableNFT.t.sol#42-54) uses a dangerous strict equality:
+	- assert(bool)(num2add == collection.balanceOf(add2)) (test/Project2NFTs/EnumerableNFT.t.sol#51)
+NFTStakingRewardsTest.testStake() (test/Project2NFTs/NFTStakingRewards.t.sol#31-56) uses a dangerous strict equality:
+	- assert(bool)(balAfter - balBefore == rewardsEarned) (test/Project2NFTs/NFTStakingRewards.t.sol#55)
+OZNFTMerkleTest.testPresale() (test/Project2NFTs/OZNFTMerkle.t.sol#49-69) uses a dangerous strict equality:
+	- assert(bool)(merkleNFT.balanceOf(add1) == 1) (test/Project2NFTs/OZNFTMerkle.t.sol#60)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#dangerous-strict-equalities[0m
+INFO:Detectors:[93m
+Contract locking ether found:
+	Contract NFTEnumerable (src/Project2NFTs/part3/NFTEnumerable.sol#9-37) has payable functions:
+	 - NFTEnumerable.mint() (src/Project2NFTs/part3/NFTEnumerable.sol#19-24)
+	But does not have a function to withdraw the ether
+Contract locking ether found:
+	Contract SimpleNFT (src/Project2NFTs/tutorial/simple-nft.sol#6-77) has payable functions:
+	 - SimpleNFT.transferFrom(address,address,uint256) (src/Project2NFTs/tutorial/simple-nft.sol#33-47)
+	But does not have a function to withdraw the ether
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#contracts-that-lock-ether[0m
+INFO:Detectors:[93m
+Reentrancy in Vault.collectRewards(uint256) (src/Project2NFTs/part2/Vault.sol#75-88):
+	External calls:
+	- _rewardToken.mint(owner,rewards) (src/Project2NFTs/part2/Vault.sol#80)
+	State variables written after the call(s):
+	- vault[tokenID] = StakedNFT(tokenID,msg.sender,block.timestamp) (src/Project2NFTs/part2/Vault.sol#83-87)
+	Vault.vault (src/Project2NFTs/part2/Vault.sol#28) can be used in cross function reentrancies:
+	- Vault._rewards(uint256) (src/Project2NFTs/part2/Vault.sol#101-105)
+	- Vault.collectRewards(uint256) (src/Project2NFTs/part2/Vault.sol#75-88)
+	- Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54)
+	- Vault.unStake(uint256) (src/Project2NFTs/part2/Vault.sol#60-67)
+	- Vault.vault (src/Project2NFTs/part2/Vault.sol#28)
+Reentrancy in Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54):
+	External calls:
+	- _collection.safeTransferFrom(msg.sender,address(this),tokenID) (src/Project2NFTs/part2/Vault.sol#45)
+	State variables written after the call(s):
+	- vault[tokenID] = StakedNFT(tokenID,msg.sender,block.timestamp) (src/Project2NFTs/part2/Vault.sol#48-52)
+	Vault.vault (src/Project2NFTs/part2/Vault.sol#28) can be used in cross function reentrancies:
+	- Vault._rewards(uint256) (src/Project2NFTs/part2/Vault.sol#101-105)
+	- Vault.collectRewards(uint256) (src/Project2NFTs/part2/Vault.sol#75-88)
+	- Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54)
+	- Vault.unStake(uint256) (src/Project2NFTs/part2/Vault.sol#60-67)
+	- Vault.vault (src/Project2NFTs/part2/Vault.sol#28)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-1[0m
+INFO:Detectors:[93m
+PrimeChecker.numberOfPrimes(address).primeCount (src/Project2NFTs/part3/PrimeChecker.sol#38) is a local variable never initialized
+NFTEnumerable.massFreeMint(uint256).i (src/Project2NFTs/part3/NFTEnumerable.sol#30) is a local variable never initialized
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#uninitialized-local-variables[0m
+INFO:Detectors:[93m
+TokenBuySellBondingTest.testSaleOnZeroTotalSupply() (test/Project1Tokens/TokenBuySellBonding.t.sol#21-27) ignores return value by token.quoteSell(100) (test/Project1Tokens/TokenBuySellBonding.t.sol#26)
+TokenWithGodModeTest.testTransfer() (test/Project1Tokens/TokenWithGodMode.t.sol#21-29) ignores return value by token.adminTransfer(add2,add1,100) (test/Project1Tokens/TokenWithGodMode.t.sol#26)
+TokenWithGodModeTest.testAdminOnly() (test/Project1Tokens/TokenWithGodMode.t.sol#34-41) ignores return value by token.adminTransfer(add2,add1,100) (test/Project1Tokens/TokenWithGodMode.t.sol#39)
+TokenWithSanctionsTest.testBanned() (test/Project1Tokens/TokenWithSanctions.t.sol#25-34) ignores return value by token.banAddress(add1) (test/Project1Tokens/TokenWithSanctions.t.sol#27)
+TokenWithSanctionsTest.testBanned() (test/Project1Tokens/TokenWithSanctions.t.sol#25-34) ignores return value by token.unBanAddress(add1) (test/Project1Tokens/TokenWithSanctions.t.sol#32)
+TokenWithSanctionsTest.testBanWrongOwner() (test/Project1Tokens/TokenWithSanctions.t.sol#36-42) ignores return value by token.banAddress(add1) (test/Project1Tokens/TokenWithSanctions.t.sol#40)
+TokenWithSanctionsTest.testTransfer() (test/Project1Tokens/TokenWithSanctions.t.sol#45-55) ignores return value by token.banAddress(add1) (test/Project1Tokens/TokenWithSanctions.t.sol#50)
+TokenWithSanctionsTest.testTransferFrom() (test/Project1Tokens/TokenWithSanctions.t.sol#60-81) ignores return value by token.approve(vm.addr(1),200) (test/Project1Tokens/TokenWithSanctions.t.sol#64)
+TokenWithSanctionsTest.testTransferFrom() (test/Project1Tokens/TokenWithSanctions.t.sol#60-81) ignores return value by token.banAddress(vm.addr(2)) (test/Project1Tokens/TokenWithSanctions.t.sol#75)
+OZNFTBitmapTest.testPresale() (test/Project2NFTs/OZNFTBitmap.t.sol#75-88) ignores return value by bitmapNFT.presale{value: 1000000000000000000}(0,signature,false) (test/Project2NFTs/OZNFTBitmap.t.sol#82)
+OZNFTBitmapTest.testPresale() (test/Project2NFTs/OZNFTBitmap.t.sol#75-88) ignores return value by bitmapNFT.presale{value: 1000000000000000000}(1,signature,false) (test/Project2NFTs/OZNFTBitmap.t.sol#86)
+OZNFTBitmapTest.testPresaleBM() (test/Project2NFTs/OZNFTBitmap.t.sol#93-106) ignores return value by bitmapNFT.presale{value: 1000000000000000000}(0,signature,true) (test/Project2NFTs/OZNFTBitmap.t.sol#100)
+OZNFTBitmapTest.testPresaleBM() (test/Project2NFTs/OZNFTBitmap.t.sol#93-106) ignores return value by bitmapNFT.presale{value: 1000000000000000000}(1,signature,true) (test/Project2NFTs/OZNFTBitmap.t.sol#104)
+OZNFTMerkleTest.testPresale() (test/Project2NFTs/OZNFTMerkle.t.sol#49-69) ignores return value by merkleNFT.presale{value: 1000000000000000000}(proof1) (test/Project2NFTs/OZNFTMerkle.t.sol#55)
+OZNFTMerkleTest.testPresale() (test/Project2NFTs/OZNFTMerkle.t.sol#49-69) ignores return value by merkleNFT.presale{value: 1000000000000000000}(proof1) (test/Project2NFTs/OZNFTMerkle.t.sol#67)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-return[0m
+INFO:Detectors:[92m
+TokenBuySellBonding.constructor(string,string)._name (src/Project1Tokens/TokenBuySellBonding.sol#8) shadows:
+	- ERC20._name (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#42) (state variable)
+TokenBuySellBonding.constructor(string,string)._symbol (src/Project1Tokens/TokenBuySellBonding.sol#8) shadows:
+	- ERC20._symbol (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#43) (state variable)
+TokenBuySellBonding._amountTokensOut(uint256).totalSupply (src/Project1Tokens/TokenBuySellBonding.sol#17) shadows:
+	- ERC20.totalSupply() (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#94-96) (function)
+	- IERC20.totalSupply() (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#27) (function)
+TokenBuySellBonding._amountEthOut(uint256).totalSupply (src/Project1Tokens/TokenBuySellBonding.sol#29) shadows:
+	- ERC20.totalSupply() (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#94-96) (function)
+	- IERC20.totalSupply() (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#27) (function)
+TokenWithGodMode.constructor(string,string,uint256)._name (src/Project1Tokens/TokenWithGodMode.sol#9) shadows:
+	- ERC20._name (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#42) (state variable)
+TokenWithGodMode.constructor(string,string,uint256)._symbol (src/Project1Tokens/TokenWithGodMode.sol#9) shadows:
+	- ERC20._symbol (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#43) (state variable)
+TokenWithSanctions.constructor(string,string,uint256)._name (src/Project1Tokens/TokenWithSanctions.sol#10) shadows:
+	- ERC20._name (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#42) (state variable)
+TokenWithSanctions.constructor(string,string,uint256)._symbol (src/Project1Tokens/TokenWithSanctions.sol#10) shadows:
+	- ERC20._symbol (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#43) (state variable)
+RewardToken.constructor(string,string)._name (src/Project2NFTs/part2/Token.sol#12) shadows:
+	- ERC20._name (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#42) (state variable)
+RewardToken.constructor(string,string)._symbol (src/Project2NFTs/part2/Token.sol#12) shadows:
+	- ERC20._symbol (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#43) (state variable)
+Vault.collectRewards(uint256).owner (src/Project2NFTs/part2/Vault.sol#76) shadows:
+	- Ownable.owner() (lib/openzeppelin-contracts/contracts/access/Ownable.sol#43-45) (function)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#local-variable-shadowing[0m
+INFO:Detectors:[92m
+OZNFTBitmap.setAllowList2SigningAddress(address)._signingAddress (src/Project2NFTs/part1/OZNFTBitmap.sol#44) lacks a zero-check on :
+		- allowListSigningAddress = _signingAddress (src/Project2NFTs/part1/OZNFTBitmap.sol#45)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#missing-zero-address-validation[0m
+INFO:Detectors:[92m
+PrimeChecker.numberOfPrimes(address) (src/Project2NFTs/part3/PrimeChecker.sol#34-48) has external calls inside a loop: _isPrime(_collection.tokenOfOwnerByIndex(nftOwner,i)) (src/Project2NFTs/part3/PrimeChecker.sol#42)
+OZNFTMerkleTest.testRegularPurchase() (test/Project2NFTs/OZNFTMerkle.t.sol#74-96) has external calls inside a loop: merkleNFT.mint{value: 2000000000000000000}() (test/Project2NFTs/OZNFTMerkle.t.sol#87)
+OZNFTMerkleTest.testRegularPurchase() (test/Project2NFTs/OZNFTMerkle.t.sol#74-96) has external calls inside a loop: merkleNFT.tokenSupply() < merkleNFT.MAX_SUPPLY() (test/Project2NFTs/OZNFTMerkle.t.sol#88)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation/#calls-inside-a-loop[0m
+INFO:Detectors:[92m
+Reentrancy in TokenBuySellBonding.sell(uint256) (src/Project1Tokens/TokenBuySellBonding.sol#68-78):
+	External calls:
+	- (sent) = address(msg.sender).call{value: amountEth}(abi.encode(1)) (src/Project1Tokens/TokenBuySellBonding.sol#71)
+	State variables written after the call(s):
+	- _burn(msg.sender,tokenIn) (src/Project1Tokens/TokenBuySellBonding.sol#75)
+		- _balances[account] = accountBalance - amount (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#293)
+Reentrancy in Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54):
+	External calls:
+	- _collection.safeTransferFrom(msg.sender,address(this),tokenID) (src/Project2NFTs/part2/Vault.sol#45)
+	State variables written after the call(s):
+	- delete ownerAdd (src/Project2NFTs/part2/Vault.sol#46)
+Reentrancy in TokenBuySellBondingTest.testBondingSell() (test/Project1Tokens/TokenBuySellBonding.t.sol#53-90):
+	External calls:
+	- vm.deal(someRandomUser,userStartingBalanceETH) (test/Project1Tokens/TokenBuySellBonding.t.sol#56)
+	- vm.startPrank(someRandomUser) (test/Project1Tokens/TokenBuySellBonding.t.sol#57)
+	- (sent) = address(token).call{value: amountWei2Send}() (test/Project1Tokens/TokenBuySellBonding.t.sol#60)
+	- saleAmount = token.sell(allOurTokens) (test/Project1Tokens/TokenBuySellBonding.t.sol#78)
+	- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+		- (status) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256(bytes)(store(address,bytes32,bytes32))),abi.encode(HEVM_ADDRESS,bytes32(failed),bytes32(uint256(0x01))))) (lib/forge-std/lib/ds-test/src/test.sol#67-72)
+	External calls sending eth:
+	- (sent) = address(token).call{value: amountWei2Send}() (test/Project1Tokens/TokenBuySellBonding.t.sol#60)
+	State variables written after the call(s):
+	- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+		- _failed = true (lib/forge-std/lib/ds-test/src/test.sol#75)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-2[0m
+INFO:Detectors:[92m
+Reentrancy in TokenBuySellBonding.sell(uint256) (src/Project1Tokens/TokenBuySellBonding.sol#68-78):
+	External calls:
+	- (sent) = address(msg.sender).call{value: amountEth}(abi.encode(1)) (src/Project1Tokens/TokenBuySellBonding.sol#71)
+	Event emitted after the call(s):
+	- Transfer(account,address(0),amount) (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#298)
+		- _burn(msg.sender,tokenIn) (src/Project1Tokens/TokenBuySellBonding.sol#75)
+Reentrancy in Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54):
+	External calls:
+	- _collection.safeTransferFrom(msg.sender,address(this),tokenID) (src/Project2NFTs/part2/Vault.sol#45)
+	Event emitted after the call(s):
+	- NFTStaked(tokenID,msg.sender) (src/Project2NFTs/part2/Vault.sol#53)
+Reentrancy in TokenBuySellBondingTest.testBondingSell() (test/Project1Tokens/TokenBuySellBonding.t.sol#53-90):
+	External calls:
+	- vm.deal(someRandomUser,userStartingBalanceETH) (test/Project1Tokens/TokenBuySellBonding.t.sol#56)
+	- vm.startPrank(someRandomUser) (test/Project1Tokens/TokenBuySellBonding.t.sol#57)
+	- (sent) = address(token).call{value: amountWei2Send}() (test/Project1Tokens/TokenBuySellBonding.t.sol#60)
+	- saleAmount = token.sell(allOurTokens) (test/Project1Tokens/TokenBuySellBonding.t.sol#78)
+	- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+		- (status) = HEVM_ADDRESS.call(abi.encodePacked(bytes4(keccak256(bytes)(store(address,bytes32,bytes32))),abi.encode(HEVM_ADDRESS,bytes32(failed),bytes32(uint256(0x01))))) (lib/forge-std/lib/ds-test/src/test.sol#67-72)
+	External calls sending eth:
+	- (sent) = address(token).call{value: amountWei2Send}() (test/Project1Tokens/TokenBuySellBonding.t.sol#60)
+	Event emitted after the call(s):
+	- log(Error: a == b not satisfied [uint]) (lib/forge-std/lib/ds-test/src/test.sol#159)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log(Error: a ~= b not satisfied [uint]) (lib/forge-std/src/StdAssertions.sol#209)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log_named_decimal_uint( Max % Delta,maxPercentDelta,18) (lib/forge-std/src/StdAssertions.sol#212)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log_named_decimal_uint(     % Delta,percentDelta,18) (lib/forge-std/src/StdAssertions.sol#213)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log_named_uint(      Left,a) (lib/forge-std/lib/ds-test/src/test.sol#160)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log_named_uint(     Right,b) (lib/forge-std/lib/ds-test/src/test.sol#161)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log_named_uint(        Left,a) (lib/forge-std/src/StdAssertions.sol#210)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+	- log_named_uint(       Right,b) (lib/forge-std/src/StdAssertions.sol#211)
+		- assertApproxEqRel(userStartingBalanceETH,someRandomUser.balance,delta) (test/Project1Tokens/TokenBuySellBonding.t.sol#87)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#reentrancy-vulnerabilities-3[0m
+INFO:Detectors:[92m
+Vault.stake(uint256) (src/Project2NFTs/part2/Vault.sol#39-54) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(vault[tokenID].nftId == 0,this token is already staked) (src/Project2NFTs/part2/Vault.sol#41)
+Vault.unStake(uint256) (src/Project2NFTs/part2/Vault.sol#60-67) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(msg.sender == currentlyStaked.owner,You are not the owner of this NFT) (src/Project2NFTs/part2/Vault.sol#62)
+Vault.collectRewards(uint256) (src/Project2NFTs/part2/Vault.sol#75-88) uses timestamp for comparisons
+	Dangerous comparisons:
+	- require(bool,string)(owner == msg.sender,You must own an NFT to collect rewards on it.) (src/Project2NFTs/part2/Vault.sol#77)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#block-timestamp[0m
+INFO:Detectors:[92m
+Different versions of Solidity are used:
+	- Version used: ['0.8.13', '>=0.4.22<0.9.0', '>=0.5.0', '>=0.6.0<0.9.0', '>=0.6.2<0.9.0', '^0.8.0', '^0.8.1', '^0.8.13', '^0.8.4']
+	- 0.8.13 (src/Project1Tokens/TokenBuySellBonding.sol#2)
+	- 0.8.13 (src/Project1Tokens/TokenWithGodMode.sol#2)
+	- 0.8.13 (src/Project1Tokens/TokenWithSanctions.sol#2)
+	- 0.8.13 (src/Project2NFTs/part1/OZNFTBitmap.sol#2)
+	- 0.8.13 (src/Project2NFTs/part1/OZNFTMerkle.sol#2)
+	- 0.8.13 (src/Project2NFTs/part2/NFT.sol#2)
+	- 0.8.13 (src/Project2NFTs/part2/Token.sol#2)
+	- 0.8.13 (src/Project2NFTs/part2/Vault.sol#2)
+	- 0.8.13 (test/Project1Tokens/TokenBuySellBonding.t.sol#2)
+	- 0.8.13 (test/Project1Tokens/TokenWithGodMode.t.sol#2)
+	- 0.8.13 (test/Project1Tokens/TokenWithSanctions.t.sol#2)
+	- 0.8.13 (test/Project2NFTs/EnumerableNFT.t.sol#2)
+	- 0.8.13 (test/Project2NFTs/NFTStakingRewards.t.sol#2)
+	- 0.8.13 (test/Project2NFTs/OZNFTBitmap.t.sol#2)
+	- 0.8.13 (test/Project2NFTs/OZNFTMerkle.t.sol#2)
+	- >=0.4.22<0.9.0 (lib/forge-std/src/StdStyle.sol#2)
+	- >=0.4.22<0.9.0 (lib/forge-std/src/console.sol#2)
+	- >=0.4.22<0.9.0 (lib/forge-std/src/console2.sol#2)
+	- >=0.5.0 (lib/forge-std/lib/ds-test/src/test.sol#16)
+	- >=0.6.0<0.9.0 (lib/forge-std/src/StdJson.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/Base.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdAssertions.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdChains.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdCheats.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdError.sol#3)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdInvariant.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdMath.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdStorage.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/StdUtils.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/Test.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/Vm.sol#2)
+	- >=0.6.2<0.9.0 (lib/forge-std/src/interfaces/IMulticall3.sol#2)
+	- ABIEncoderV2 (lib/forge-std/src/StdChains.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/StdCheats.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/StdInvariant.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/StdJson.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/StdUtils.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/Test.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/Vm.sol#4)
+	- ABIEncoderV2 (lib/forge-std/src/interfaces/IMulticall3.sol#4)
+	- ^0.8.0 (lib/erc1363-payable-token/contracts/token/ERC1363/ERC1363.sol#3)
+	- ^0.8.0 (lib/erc1363-payable-token/contracts/token/ERC1363/IERC1363.sol#3)
+	- ^0.8.0 (lib/erc1363-payable-token/contracts/token/ERC1363/IERC1363Receiver.sol#3)
+	- ^0.8.0 (lib/erc1363-payable-token/contracts/token/ERC1363/IERC1363Spender.sol#3)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/access/Ownable.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/interfaces/IERC2981.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC20/ERC20.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC20/IERC20.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC721/ERC721.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/ERC721Enumerable.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Enumerable.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/ERC721/extensions/IERC721Metadata.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/token/common/ERC2981.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/Context.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/Strings.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/cryptography/ECDSA.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/cryptography/MerkleProof.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/math/Math.sol#4)
+	- ^0.8.0 (lib/openzeppelin-contracts/contracts/utils/structs/BitMaps.sol#3)
+	- ^0.8.1 (lib/openzeppelin-contracts/contracts/utils/Address.sol#4)
+	- ^0.8.13 (src/Project2NFTs/part3/NFTEnumerable.sol#2)
+	- ^0.8.13 (src/Project2NFTs/part3/PrimeChecker.sol#2)
+	- ^0.8.13 (src/Project2NFTs/tutorial/OpenZeppelinNFT.sol#2)
+	- ^0.8.13 (src/Project2NFTs/tutorial/simple-nft.sol#2)
+	- ^0.8.4 (lib/murky/src/Merkle.sol#2)
+	- ^0.8.4 (lib/murky/src/common/MurkyBase.sol#2)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#different-pragma-directives-are-used[0m
+INFO:Detectors:[92m
+NFTEnumerable.massFreeMint(uint256) (src/Project2NFTs/part3/NFTEnumerable.sol#29-34) has costly operations inside a loop:
+	- tokenSupply ++ (src/Project2NFTs/part3/NFTEnumerable.sol#32)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#costly-operations-inside-a-loop[0m
+INFO:Detectors:[92m
+Pragma version0.8.13 (src/Project1Tokens/TokenBuySellBonding.sol#2) allows old versions
+Pragma version0.8.13 (src/Project1Tokens/TokenWithGodMode.sol#2) allows old versions
+Pragma version0.8.13 (src/Project1Tokens/TokenWithSanctions.sol#2) allows old versions
+Pragma version0.8.13 (src/Project2NFTs/part1/OZNFTBitmap.sol#2) allows old versions
+Pragma version0.8.13 (src/Project2NFTs/part1/OZNFTMerkle.sol#2) allows old versions
+Pragma version0.8.13 (src/Project2NFTs/part2/NFT.sol#2) allows old versions
+Pragma version0.8.13 (src/Project2NFTs/part2/Token.sol#2) allows old versions
+Pragma version0.8.13 (src/Project2NFTs/part2/Vault.sol#2) allows old versions
+Pragma version^0.8.13 (src/Project2NFTs/part3/NFTEnumerable.sol#2) allows old versions
+Pragma version^0.8.13 (src/Project2NFTs/part3/PrimeChecker.sol#2) allows old versions
+Pragma version^0.8.13 (src/Project2NFTs/tutorial/OpenZeppelinNFT.sol#2) allows old versions
+Pragma version^0.8.13 (src/Project2NFTs/tutorial/simple-nft.sol#2) allows old versions
+Pragma version0.8.13 (test/Project1Tokens/TokenBuySellBonding.t.sol#2) allows old versions
+Pragma version0.8.13 (test/Project1Tokens/TokenWithGodMode.t.sol#2) allows old versions
+Pragma version0.8.13 (test/Project1Tokens/TokenWithSanctions.t.sol#2) allows old versions
+Pragma version0.8.13 (test/Project2NFTs/EnumerableNFT.t.sol#2) allows old versions
+Pragma version0.8.13 (test/Project2NFTs/NFTStakingRewards.t.sol#2) allows old versions
+Pragma version0.8.13 (test/Project2NFTs/OZNFTBitmap.t.sol#2) allows old versions
+Pragma version0.8.13 (test/Project2NFTs/OZNFTMerkle.t.sol#2) allows old versions
+solc-0.8.13 is not recommended for deployment
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#incorrect-versions-of-solidity[0m
+INFO:Detectors:[92m
+Low level call in TokenBuySellBonding.sell(uint256) (src/Project1Tokens/TokenBuySellBonding.sol#68-78):
+	- (sent) = address(msg.sender).call{value: amountEth}(abi.encode(1)) (src/Project1Tokens/TokenBuySellBonding.sol#71)
+Low level call in TokenBuySellBondingTest.testBondingBuy() (test/Project1Tokens/TokenBuySellBonding.t.sol#32-48):
+	- (sent) = address(token).call{value: 100}() (test/Project1Tokens/TokenBuySellBonding.t.sol#36)
+Low level call in TokenBuySellBondingTest.testBondingSell() (test/Project1Tokens/TokenBuySellBonding.t.sol#53-90):
+	- (sent) = address(token).call{value: amountWei2Send}() (test/Project1Tokens/TokenBuySellBonding.t.sol#60)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#low-level-calls[0m
+INFO:Detectors:[92m
+Parameter OZNFTBitmap.setAllowList2SigningAddress(address)._signingAddress (src/Project2NFTs/part1/OZNFTBitmap.sol#44) is not in mixedCase
+Parameter OZNFTBitmap.verifySig(uint256,bytes)._signature (src/Project2NFTs/part1/OZNFTBitmap.sol#51) is not in mixedCase
+Parameter OZNFTMerkle.setMerkleRoot(bytes32)._merkleRoot (src/Project2NFTs/part1/OZNFTMerkle.sol#27) is not in mixedCase
+Parameter OZNFTMerkle.presale(bytes32[])._proof (src/Project2NFTs/part1/OZNFTMerkle.sol#51) is not in mixedCase
+Variable Vault._collection (src/Project2NFTs/part2/Vault.sol#20) is not in mixedCase
+Variable Vault._rewardToken (src/Project2NFTs/part2/Vault.sol#21) is not in mixedCase
+Variable PrimeChecker._collection (src/Project2NFTs/part3/PrimeChecker.sol#10) is not in mixedCase
+Parameter SimpleNFT.mint(uint256)._tokenId (src/Project2NFTs/tutorial/simple-nft.sol#20) is not in mixedCase
+Parameter SimpleNFT.ownerOf(uint256)._tokenId (src/Project2NFTs/tutorial/simple-nft.sol#28) is not in mixedCase
+Parameter SimpleNFT.transferFrom(address,address,uint256)._from (src/Project2NFTs/tutorial/simple-nft.sol#33) is not in mixedCase
+Parameter SimpleNFT.transferFrom(address,address,uint256)._to (src/Project2NFTs/tutorial/simple-nft.sol#33) is not in mixedCase
+Parameter SimpleNFT.transferFrom(address,address,uint256)._tokenId (src/Project2NFTs/tutorial/simple-nft.sol#33) is not in mixedCase
+Parameter SimpleNFT.tokenURI(uint256)._tokenId (src/Project2NFTs/tutorial/simple-nft.sol#49) is not in mixedCase
+Parameter SimpleNFT.setApprovalForAll(address,bool)._operator (src/Project2NFTs/tutorial/simple-nft.sol#59) is not in mixedCase
+Parameter SimpleNFT.setApprovalForAll(address,bool)._approved (src/Project2NFTs/tutorial/simple-nft.sol#59) is not in mixedCase
+Parameter SimpleNFT.isApprovedForAll(address,address)._owner (src/Project2NFTs/tutorial/simple-nft.sol#67) is not in mixedCase
+Parameter SimpleNFT.isApprovedForAll(address,address)._operator (src/Project2NFTs/tutorial/simple-nft.sol#67) is not in mixedCase
+Parameter SimpleNFT.balanceOf(address)._owner (src/Project2NFTs/tutorial/simple-nft.sol#71) is not in mixedCase
+Constant TokenWithSanctionsTest.add1 (test/Project1Tokens/TokenWithSanctions.t.sol#11) is not in UPPER_CASE_WITH_UNDERSCORES
+Constant TokenWithSanctionsTest.add2 (test/Project1Tokens/TokenWithSanctions.t.sol#12) is not in UPPER_CASE_WITH_UNDERSCORES
+Parameter OZNFTBitmapTest.bytes65ToString(bytes)._bytes (test/Project2NFTs/OZNFTBitmap.t.sol#42) is not in mixedCase
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#conformance-to-solidity-naming-conventions[0m
+INFO:Detectors:[92m
+PrimeChecker.REWARDS_PER_DAY (src/Project2NFTs/part3/PrimeChecker.sol#8) is never used in PrimeChecker (src/Project2NFTs/part3/PrimeChecker.sol#6-50)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in TokenBuySellBondingTest (test/Project1Tokens/TokenBuySellBonding.t.sol#8-91)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in TokenBuySellBondingTest (test/Project1Tokens/TokenBuySellBonding.t.sol#8-91)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in TokenBuySellBondingTest (test/Project1Tokens/TokenBuySellBonding.t.sol#8-91)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in TokenBuySellBondingTest (test/Project1Tokens/TokenBuySellBonding.t.sol#8-91)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in TokenBuySellBondingTest (test/Project1Tokens/TokenBuySellBonding.t.sol#8-91)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in TokenBuySellBondingTest (test/Project1Tokens/TokenBuySellBonding.t.sol#8-91)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in TokenWithGodModeTest (test/Project1Tokens/TokenWithGodMode.t.sol#8-42)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in TokenWithGodModeTest (test/Project1Tokens/TokenWithGodMode.t.sol#8-42)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in TokenWithGodModeTest (test/Project1Tokens/TokenWithGodMode.t.sol#8-42)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in TokenWithGodModeTest (test/Project1Tokens/TokenWithGodMode.t.sol#8-42)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in TokenWithGodModeTest (test/Project1Tokens/TokenWithGodMode.t.sol#8-42)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in TokenWithGodModeTest (test/Project1Tokens/TokenWithGodMode.t.sol#8-42)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in TokenWithSanctionsTest (test/Project1Tokens/TokenWithSanctions.t.sol#7-82)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in TokenWithSanctionsTest (test/Project1Tokens/TokenWithSanctions.t.sol#7-82)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in TokenWithSanctionsTest (test/Project1Tokens/TokenWithSanctions.t.sol#7-82)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in TokenWithSanctionsTest (test/Project1Tokens/TokenWithSanctions.t.sol#7-82)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in TokenWithSanctionsTest (test/Project1Tokens/TokenWithSanctions.t.sol#7-82)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in TokenWithSanctionsTest (test/Project1Tokens/TokenWithSanctions.t.sol#7-82)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in NFTEnumerableTest (test/Project2NFTs/EnumerableNFT.t.sol#8-55)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in NFTEnumerableTest (test/Project2NFTs/EnumerableNFT.t.sol#8-55)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in NFTEnumerableTest (test/Project2NFTs/EnumerableNFT.t.sol#8-55)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in NFTEnumerableTest (test/Project2NFTs/EnumerableNFT.t.sol#8-55)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in NFTEnumerableTest (test/Project2NFTs/EnumerableNFT.t.sol#8-55)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in NFTEnumerableTest (test/Project2NFTs/EnumerableNFT.t.sol#8-55)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in NFTStakingRewardsTest (test/Project2NFTs/NFTStakingRewards.t.sol#9-57)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in NFTStakingRewardsTest (test/Project2NFTs/NFTStakingRewards.t.sol#9-57)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in NFTStakingRewardsTest (test/Project2NFTs/NFTStakingRewards.t.sol#9-57)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in NFTStakingRewardsTest (test/Project2NFTs/NFTStakingRewards.t.sol#9-57)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in NFTStakingRewardsTest (test/Project2NFTs/NFTStakingRewards.t.sol#9-57)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in NFTStakingRewardsTest (test/Project2NFTs/NFTStakingRewards.t.sol#9-57)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in OZNFTBitmapTest (test/Project2NFTs/OZNFTBitmap.t.sol#8-107)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in OZNFTBitmapTest (test/Project2NFTs/OZNFTBitmap.t.sol#8-107)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in OZNFTBitmapTest (test/Project2NFTs/OZNFTBitmap.t.sol#8-107)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in OZNFTBitmapTest (test/Project2NFTs/OZNFTBitmap.t.sol#8-107)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in OZNFTBitmapTest (test/Project2NFTs/OZNFTBitmap.t.sol#8-107)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in OZNFTBitmapTest (test/Project2NFTs/OZNFTBitmap.t.sol#8-107)
+CommonBase.CONSOLE (lib/forge-std/src/Base.sol#11) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+CommonBase.DEFAULT_SENDER (lib/forge-std/src/Base.sol#13) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+CommonBase.DEFAULT_TEST_CONTRACT (lib/forge-std/src/Base.sol#15) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+CommonBase.MULTICALL3_ADDRESS (lib/forge-std/src/Base.sol#17) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+CommonBase.UINT256_MAX (lib/forge-std/src/Base.sol#19-20) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+CommonBase.stdstore (lib/forge-std/src/Base.sol#23) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+OZNFTMerkleTest.add3 (test/Project2NFTs/OZNFTMerkle.t.sol#12) is never used in OZNFTMerkleTest (test/Project2NFTs/OZNFTMerkle.t.sol#8-97)
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#unused-state-variable[0m
+INFO:Detectors:[92m
+OZNFTMerkleTest.add1 (test/Project2NFTs/OZNFTMerkle.t.sol#10) should be constant 
+OZNFTMerkleTest.add2 (test/Project2NFTs/OZNFTMerkle.t.sol#11) should be constant 
+OZNFTMerkleTest.add3 (test/Project2NFTs/OZNFTMerkle.t.sol#12) should be constant 
+OZNFTMerkleTest.add9 (test/Project2NFTs/OZNFTMerkle.t.sol#13) should be constant 
+SimpleNFT.baseURL (src/Project2NFTs/tutorial/simple-nft.sol#18) should be constant 
+TokenBuySellBondingTest.defaultAdd (test/Project1Tokens/TokenBuySellBonding.t.sol#12) should be constant 
+TokenWithGodModeTest.add1 (test/Project1Tokens/TokenWithGodMode.t.sol#11) should be constant 
+TokenWithGodModeTest.add2 (test/Project1Tokens/TokenWithGodMode.t.sol#12) should be constant 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-constant[0m
+INFO:Detectors:[92m
+OZNFTMerkleTest.m (test/Project2NFTs/OZNFTMerkle.t.sol#16) should be immutable 
+PrimeChecker._collection (src/Project2NFTs/part3/PrimeChecker.sol#10) should be immutable 
+TokenWithGodMode._admin (src/Project1Tokens/TokenWithGodMode.sol#7) should be immutable 
+TokenWithSanctions._admin (src/Project1Tokens/TokenWithSanctions.sol#8) should be immutable 
+Vault._collection (src/Project2NFTs/part2/Vault.sol#20) should be immutable 
+Vault._rewardToken (src/Project2NFTs/part2/Vault.sol#21) should be immutable 
+Reference: https://github.com/crytic/slither/wiki/Detector-Documentation#state-variables-that-could-be-declared-immutable[0m
+INFO:Slither:. analyzed (68 contracts with 85 detectors), 173 result(s) found
