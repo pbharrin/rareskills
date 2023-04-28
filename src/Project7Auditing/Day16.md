@@ -146,7 +146,7 @@ In ```vote()``` there are a number of modifiers used they check: the election is
     }
 ```
 
-The above code says that our attack contract cannot call any of these methods.  So we will have to call them with our EOA.  Here is the modified attack: 1. nominate the attacker EOA as the challenger 2. transfer one token to the attack contract 3. vote one time 4. transfer the second token to the attack contract.  5. have the attack contract vote (no reentrancy needed).
+The above code says that our attack contract cannot call any of these methods.  So we will have to call them with our EOA.  Here is the modified attack: 0. Get a 2nd attack address (done in setup())  1. nominate the attacker EOA as the challenger 2. transfer one token to the second attack address 3. vote one time 4. transfer the second token to the second attack address.  5. have the second attack address vote 6. Having won the election, withdraw the funds (no reentrancy, or attack contract needed).
 
 ```Javascript
     it("conduct your attack here", async function () {
