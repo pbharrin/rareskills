@@ -31,3 +31,8 @@ The code above simply has the forwarderContract forward the ```sendEther()``` ca
 
 
 ### RareSkills Riddles: Assign Votes
+
+The objective here is to drain the victimContract in one transaction.  The contract can create proposals and addresses can vote on these proposals if they have been assigned.  Each address can vote 
+
+Each proposal has a value, a target address and data that will be called if the number of votes is over 9.  
+
