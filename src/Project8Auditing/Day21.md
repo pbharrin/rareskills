@@ -71,7 +71,24 @@ Without this staement we should be able to trade any tokens we want.  We will cr
 
 A few details should be metnioned.  We first create a new ERC20 token and mint some supply.  The minimum we need is 400 tokens. After the tokens are minted we need to transfer 100 tokens to the DEX. If we don't then we will get a divide by 0 error during ```getSwapAmount()```.   The DEX ```.addliquitidy()``` method cannot be used becuase it has the ```onlyOwner()``` modifier.  We will use the token's ```.tranfer()``` instead.  After this we can do a one for one swap for token1, then the DEX will have a balance of 200 junkcoins and we will need to send 200 junkcoins for 100 token2.  
 
-### Ethernaut #17
+### Ethernaut #17 (Recovery)
+
+In this challenge the contract owner has created a token factory.  The tokens will take Ether as collateral and return tokens based on the colaterial sent.  There is no bonding curve.  The onwer sent 0.001 Ether to the contract.  The owner has forgotten the address of this contract and would like to get his Ether back.  Our objective is to retreive the 0.001 Ether.  Relevant parts of the contract are below.  
+
+```Java
+  // collect ether in return for tokens
+  receive() external payable {
+    balances[msg.sender] = msg.value * 10;
+  }
+
+  // clean up after ourselves
+  function destroy(address payable _to) public {
+    selfdestruct(_to);
+  }
+```
+
+The exploit lies in the ```destroy()``` method.  This is public, so anyone can call it, probably a bad idea. ```destroy()``` calls  ```selfdestruct()```.  ```selfdestruct()``` will destroy the contract and send the remaining balance to an address, all we have to do is specify our own address in a call to ```destroy()```.  
+
 
 ### Damn Vulnerable DeFi #2 Naive Receiver
 
